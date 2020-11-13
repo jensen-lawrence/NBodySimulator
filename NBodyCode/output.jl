@@ -10,17 +10,17 @@ include("NBodyGraphing.jl")
 #= Simulation Parameters and Execution =#
 
 # Pick one of the pre-defined object groups, or define your own
-bodies = Stars
+bodies = SolarSystem
 
 # Pick the time over which the simulation will be run
 # Default time is in seconds. You can can also use other time constants defined in NBodyConstants.jl
-T = 5.0*DAY
+T = 1.0*DAY
 
 # Running the simulation and acquiring the data
 data = runsimulation(bodies, T)
 
 # Change this to the absolute path to where the plots should be stored
-graphdir = "C:\\Users\\Jensen\\Documents\\Projects\\NBodySimulator\\"
+graphdir = ""
 
 # ---------------------------------------------------------------------------------------------------------------------
 
@@ -31,7 +31,7 @@ graphdir = "C:\\Users\\Jensen\\Documents\\Projects\\NBodySimulator\\"
 #     data,
 #     "Weeks",
 #     "All",
-#     graphdir * "momentumexample.png",
+#     graphdir * "momentum.png",
 #     showlegend = true,
 #     dpi = 400
 # )
@@ -40,7 +40,7 @@ graphdir = "C:\\Users\\Jensen\\Documents\\Projects\\NBodySimulator\\"
 # energyplot(
 #     data,
 #     "Weeks",
-#     graphdir * "energyexample.png",
+#     graphdir * "energy.png",
 #     showlegend = true,
 #     dpi = 400
 # )
@@ -51,7 +51,7 @@ graphdir = "C:\\Users\\Jensen\\Documents\\Projects\\NBodySimulator\\"
 #     ["x", "y"],
 #     "AU",
 #     "Years",
-#     graphdir * "positionexample.png",
+#     graphdir * "position.png",
 #     showlegend = true,
 #     dpi = 400
 # )
@@ -62,7 +62,7 @@ graphdir = "C:\\Users\\Jensen\\Documents\\Projects\\NBodySimulator\\"
 #     ["x", "y"],
 #     "m/s",
 #     "Years",
-#     graphdir * "velocityexample.png",
+#     graphdir * "velocity.png",
 #     showlegend = true,
 #     dpi = 400
 # )
@@ -73,7 +73,7 @@ graphdir = "C:\\Users\\Jensen\\Documents\\Projects\\NBodySimulator\\"
 #     ["x", "y", "z"],
 #     "AU",
 #     "Days",
-#     graphdir * "3Dstaticexample.png",
+#     graphdir * "3Dstatic.png",
 #     showlegend = true,
 #     squareplot = false,
 #     dpi = 400,
@@ -81,19 +81,19 @@ graphdir = "C:\\Users\\Jensen\\Documents\\Projects\\NBodySimulator\\"
 # )
 
 # Uncomment then run code to generate object space animation
-animatedspaceplot(
-    data,
-    ["x", "y", "z"],
-    "AU",
-    "Days",
-    graphdir * "3Danimatedexample.gif",
-    showlegend = true,
-    showpaths = true,
-    squareplot = false,
-    dpi = 400,
-    displayevery = 200,
-    fps = 30,
-    angle3D = (30, 30)
-)
+# animatedspaceplot(
+#     data,
+#     ["x", "y", "z"],
+#     "AU",
+#     "Days",
+#     graphdir * "3Danimated.gif",
+#     showlegend = true,
+#     showpaths = true,
+#     squareplot = false,
+#     dpi = 400,
+#     displayevery = 200,
+#     fps = 30,
+#     angle3D = (30, 30)
+# )
 
 # ---------------------------------------------------------------------------------------------------------------------
