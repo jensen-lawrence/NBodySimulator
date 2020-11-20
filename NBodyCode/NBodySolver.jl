@@ -87,9 +87,9 @@ end
 
 """
     syspotential(bodies::Vector{Body};
-                 G::Float64)
+                 G::Float64 = 6.67408e-11, soften::Float64 = 0.0)
 
-syspotential : Vector{Body}; Float64 -> Float64
+syspotential : Vector{Body}; Float64, Float64 -> Float64
     | Computes and returns the total gravitational potential energy of a given
     system of Body structs.
 
@@ -102,7 +102,7 @@ G : Float64
     be changed. Set to 6.67408e-11 by default.
 """
 function syspotential(bodies::Vector{Body};
-                      G = 6.67408e-11, soften = 0.0)
+                      G::Float64 = 6.67408e-11, soften::Float64 = 0.0)
     L = length(bodies)
     if L == 0
         V = 0.0
@@ -136,8 +136,8 @@ end
 
 
 """
-    acceleration(M::Float64, x₁::Vector{Float64}, x₂::Vector{Float64};
-                 G::Float64, soften::Float64)
+    acceleration(x₁::Vector{Float64}, M::Float64, x₂::Vector{Float64};
+                 G::Float64 = 6.67408e-11, soften::Float64 = 0.0)
 
 acceleration : Float64, Vector{Float64}, Vector{Float64}; Float64, Float64 -> Vector{Float64}
     | Computes and returns the acceleration of a body at x₁ due to the force
@@ -164,7 +164,7 @@ soften : Float64
     between close bodies. Set to 0.0 by default.
 """
 function acceleration(x₁::Vector{Float64}, M::Float64, x₂::Vector{Float64};
-                      G = 6.67408e-11, soften = 0.0)
+                      G::Float64 = 6.67408e-11, soften::Float64 = 0.0)
     r = distance(x₁, x₂)
     a = (G*M)/(r^2 + soften^2) * (1/r) * (x₂ - x₁)
     return a

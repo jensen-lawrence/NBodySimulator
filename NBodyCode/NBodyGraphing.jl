@@ -51,9 +51,9 @@ end
 
 """
     momentumplot(data::Vector, timescale::String, component::String, saveas::String;
-                 showlegend = true, dpi = 300)
+                 showlegend::Bool = true, dpi::Int = 300)
 
-momentumplot : Vector, String, String, String; Int -> Plot
+momentumplot : Vector, String, String, String; Bool, Int -> Plot
     | Using data from a simulation, generates a plot of a given component of
     momentum against time. The plot is then saved locally.
 
@@ -82,7 +82,7 @@ dpi : Int
     value is 300.
 """
 function momentumplot(data::Vector, timescale::String, component::String, saveas::String;
-                      showlegend = true, dpi = 300)
+                      showlegend::Bool = true, dpi::Int = 300)
     # Assert statements
     @assert component ∈ ["x", "y", "z", "Total", "All"]
     @assert saveas != ""
@@ -152,9 +152,9 @@ end
 
 """
     energyplot(data::Vector, timescale::String, saveas::String;
-               showlegend = true, dpi = 300)
+               showlegend::Bool = true, dpi::Int = 300)
 
-energyplot : Vector, String, String; Int -> Plot
+energyplot : Vector, String, String; Bool, Int -> Plot
     | Using data from a simulation, generates a plot of a the kinetic, potential,
     and total energy against time. The plot is then saved locally.
 
@@ -178,7 +178,7 @@ dpi : Int
     value is 300.
 """
 function energyplot(data::Vector, timescale::String, saveas::String;
-                    showlegend = true, dpi = 300)
+                    showlegend::Bool = true, dpi::Int = 300)
     # Assert statements
     @assert saveas != ""
 
@@ -286,7 +286,7 @@ end
 
 """
     positionplot(data::Vector, coordinates::Vector{String}, positionscale::String, timescale::String, saveas::String;
-                 showlegend = true, dpi = 300)
+                 showlegend::Bool = true, dpi::Int = 300)
 
 positionplot : Vector, Vector{String}, String, String, String; Bool, Int -> Plot
     | Using data from a simulation, generates a plot of one or more components
@@ -320,7 +320,7 @@ dpi : Int
     value is 300.
 """
 function positionplot(data::Vector, coordinates::Vector{String}, positionscale::String, timescale::String, saveas::String;
-                      showlegend = true, dpi = 300)
+                      showlegend::Bool = true, dpi::Int = 300)
     # Assert statements
     @assert 1 ≤ length(coordinates) ≤ 3
     @assert saveas != ""
@@ -358,7 +358,7 @@ end
 
 """
     velocityplot(data::Vector, coordinates::Vector{String}, velocityscale::String, timescale::String, saveas::String;
-                 showlegend = true, dpi = 300)
+                 showlegend::Bool = true, dpi::Int = 300)
 
 velocityplot : Vector, Vector{String}, String, String, String; Bool, Int -> Plot
     | Using data from a simulation, generates a plot of one or more components
@@ -392,7 +392,7 @@ dpi : Int
     value is 300.
 """
 function velocityplot(data::Vector, coordinates::Vector{String}, velocityscale::String, timescale::String, saveas::String;
-                      showlegend = true, dpi = 300)
+                      showlegend::Bool = true, dpi::Int = 300)
     # Assert statements
     @assert 1 ≤ length(coordinates) ≤ 3
     @assert saveas != ""
@@ -430,7 +430,7 @@ end
 
 """
     staticspaceplot(data::Vector, coordinates::Vector{String}, positionscale::String, timescale::String, saveas::String;
-                    showlegend = true, squareplot = false, dpi = 300, angle3D = (30, 30))
+                    showlegend::Bool = true, squareplot::Bool = false, dpi::Int = 300, angle3D::Tuple{Int, Int} = (30, 30))
 
 staticspaceplot : Vector, Vector{String}, String, String; Bool, Int, Tuple{Int} -> Plot
     | Using data from a simulation, generates a plot of the paths of all of the
@@ -474,7 +474,7 @@ angle3D : Tuple{Int}
     generated. Default value is (30, 30).
 """
 function staticspaceplot(data::Vector, coordinates::Vector{String}, positionscale::String, timescale::String, saveas::String;
-                         showlegend = true, squareplot = false, dpi = 300, angle3D = (30, 30))
+                         showlegend::Bool = true, squareplot::Bool = false, dpi::Int = 300, angle3D::Tuple{Int, Int} = (30, 30))
     # Assert statements
     @assert length(coordinates) ∈ [2, 3]
     for coord ∈ coordinates
@@ -562,7 +562,8 @@ end
 
 """
     animatedspaceplot(data::Vector, coordinates::Vector{String}, positionscale::String, timescale::String, saveas::String;
-                      showlegend = true, showpaths = false, squareplot = false, dpi = 300, displayevery = 50, fps = 30, angle3D = (30, 30))
+                      showlegend::Bool = true, showpaths::Bool = false, squareplot::Bool = false,
+                      dpi::Int = 300, displayevery::Int = 50, fps::Int = 30, angle3D::Tuple{Int, Int} = (30, 30))
 
 animatedspaceplot : Vector, Vector{String}, String, String, String; Bool, Int, Int, Int, Tuple{Int} -> Plot
     | Using data from a simulation, generates a gif that shows how the positions
@@ -619,7 +620,8 @@ angle3D : Tuple{Int}
     generated. Default value is (30, 30).
 """
 function animatedspaceplot(data::Vector, coordinates::Vector{String}, positionscale::String, timescale::String, saveas::String;
-                           showlegend = true, showpaths = false, squareplot = false, dpi = 300, displayevery = 50, fps = 30, angle3D = (30, 30))
+                           showlegend::Bool = true, showpaths::Bool = false, squareplot::Bool = false,
+                           dpi::Int = 300, displayevery::Int = 50, fps::Int = 30, angle3D::Tuple{Int, Int} = (30, 30))
     # Assert statements
     @assert length(coordinates) ∈ [2, 3]
     for i ∈ coordinates
