@@ -9,18 +9,21 @@ include("NBodyGraphing.jl")
 
 #= Simulation Parameters and Execution =#
 
+# Change this to the absolute path to where the plots should be stored
+graphdir = "path\\to\\graph\\storage\\"
+
 # Pick one of the pre-defined object groups, or define your own
-bodies = SolarSystem
+bodies = EarthMoon
 
 # Pick the time over which the simulation will be run
 # Default time is in seconds. You can can also use other time constants defined in NBodyConstants.jl
-T = 1.0*DAY
+T = 1*DAY
+
+# Pick the method used for numerically solving the system
+method = "PEFRL"
 
 # Running the simulation and acquiring the data
-data = runsimulation(bodies, T)
-
-# Change this to the absolute path to where the plots should be stored
-graphdir = ""
+data = runsimulation(bodies, method, T)
 
 # ---------------------------------------------------------------------------------------------------------------------
 

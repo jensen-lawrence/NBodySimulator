@@ -209,9 +209,9 @@ end
 
 
 """
-    evolution!(bodies::Vector{Body}, stepcount::Int64)
+    evolution!(bodies::Vector{Body}, method::String, stepcount::Int64)
 
-evolution! : Vector{Body}, Int -> nothing
+evolution! : Vector{Body}, String, Int -> nothing
     | Computes the evolution in space and time over one time step for every Body 
     struct in bodies using the Position Extended Forest-Ruth Like algorithm. 
     Updates the x and v values of each Body struct accordingly.
@@ -220,14 +220,22 @@ bodies : Vector{Body}
     | The system of Body structs whose evolution in space and time is being
     computed.
 
+method : String
+    | Determines the method used to numerically solve the system of Newton's 
+    laws. Possible values are "Euler", "Euler-Cromer", "Position Verlet",
+    "Velocity Verlet", "Forest-Ruth", and "PEFRL". The recommended method is
+    "PEFRL".
+
 stepcount : Int
     | Determines whether a given Body struct in bodies is updated based on 
     that body's h (stepsize) value.
 """
-function evolution!(bodies::Vector{Body}, stepcount::Int)
+function evolution!(bodies::Vector{Body}, method::String, stepcount::Int)
+    # Assert statements
+    @assert method ∈ ["Euler", "Euler-Cromer", "Position Verlet", "Velocity Verlet", "Forest-Ruth", "PEFRL"]
+    
     # Constants
     L = length(bodies)
-    α = 0.1786178958448091; β = -0.2123418310626054; γ = -0.06626458266981849
 
     # Function body
     if L == 1
@@ -248,19 +256,56 @@ function evolution!(bodies::Vector{Body}, stepcount::Int)
                 h = central.h; x₀ = central.x; v₀ = central.v 
                 othermass = [other.mass for other ∈ bodies if other != central]
                 otherx = [other.x for other ∈ bodies if other != central]
+                a(x) = totalacceleration(x, othermass, otherx)
 
-                # Position Extended Forest-Ruth Like algorithm
-                x₁ = x₀ + (α*h*v₀)
-                v₁ = v₀ + ((1 - 2*β) * h/2 * totalacceleration(x₁, othermass, otherx))
-                x₂ = x₁ + (γ*h*v₁)
-                v₂ = v₁ + (β*h*totalacceleration(x₂, othermass, otherx))
-                x₃ = x₂ + ((1 - 2*(γ + α)) * h * v₂)
-                v₃ = v₂ + (β*h*totalacceleration(x₃, othermass, otherx))
-                x₄ = x₃ + (γ*h*v₃)
-                v₄ = v₃ + ((1 - 2*β) * h/2 * totalacceleration(x₄, othermass, otherx))
-                x₅ = x₄ + (α*h*v₄)
+                if method == "Euler"
+                    x₁ = x₀ + (h*v₀)
+                    v₁ = v₀ + (h*a(x₀))
+                    xnew = x₁; vnew = v₁
 
-                xvals[i] = x₅; vvals[i] = v₄
+                elseif method == "Euler-Cromer"
+                    x₁ = x₀ + (h*v₀)
+                    v₁ = v₀ + (h*a(x₁))
+                    xnew = x₁; vnew = v₁
+
+                elseif method == "Position Verlet"
+                    x₁ = x₀ + (h/2 * v₀)
+                    v₁ = v₀ + (h*a(x₁))
+                    x₂ = x₁ + (h/2 * v₁)
+                    xnew = x₂; vnew = v₁
+
+                elseif method == "Velocity Verlet"
+                    v₁ = v₀ + (h/2 * a(x₀))
+                    x₁ = x₀ + (h*v₁)
+                    v₂ = v₁ + (h/2 * a(x₁))
+                    xnew = x₁; vnew = v₂
+
+                elseif method == "Forest-Ruth"
+                    ζ = 1/(2 - 2^(1/3))
+                    x₁ = x₀ + (ζ * h/2 * v₀)
+                    v₁ = v₀ + (ζ*h*a(x₁))
+                    x₂ = x₁ + ((1 - ζ) * h/2 * v₁)
+                    v₂ = v₁ + ((1 - 2*ζ) * h * a(x₂))
+                    x₃ = x₂ + ((1 - ζ) * h/2 * v₂)
+                    v₃ = v₂ + (ζ*h*a(x₃))
+                    x₄ = x₃ + (ζ * h/2 * v₃)
+                    xnew = x₄; vnew = v₃
+
+                elseif method == "PEFRL"
+                    α = 0.1786178958448091; β = -0.2123418310626054; γ = -0.06626458266981849
+                    x₁ = x₀ + (α*h*v₀)
+                    v₁ = v₀ + ((1 - 2*β) * h/2 * a(x₁))
+                    x₂ = x₁ + (γ*h*v₁)
+                    v₂ = v₁ + (β*h*a(x₂))
+                    x₃ = x₂ + ((1 - 2*(γ + α)) * h * v₂)
+                    v₃ = v₂ + (β*h*a(x₃))
+                    x₄ = x₃ + (γ*h*v₃)
+                    v₄ = v₃ + ((1 - 2*β) * h/2 * a(x₄))
+                    x₅ = x₄ + (α*h*v₄)
+                    xnew = x₅; vnew = v₄
+                end
+                
+                xvals[i] = xnew; vvals[i] = vnew
                 update[i] = true
             else
                 update[i] = false
@@ -278,9 +323,9 @@ end
 
 
 """
-    runsimulation(bodies::Vector{Body}, T::Real)
+    runsimulation(bodies::Vector{Body}, method::String, T::Real)
 
-runsimulation : Vector{Body}, Real - > Vector{Vector{String}, Vector{Float64}}
+runsimulation : Vector{Body}, String, Real - > Vector{Vector{String}, Vector{Float64}}
     | Computes the evolution in space and time evolution for every Body struct in
     bodies from t = 0 to t = T. Returns a vector containing the names, time
     values, position values, velocity values, momentum values, kinetic energy
@@ -291,11 +336,17 @@ bodies : Vector{Body}
     | The system of Body structs whose evolution in space and time is being
     computed.
 
+method : String
+    | Determines the method used to numerically solve the system of Newton's 
+    laws. Possible values are "Euler", "Euler-Cromer", "Position Verlet",
+    "Velocity Verlet", "Forest-Ruth", "PEFRL", "RK4", and "RKNFD". The
+    recommended method is "PEFRL".
+
 T : Real
     | The time over which the simulation is run.
     Measured in s.
 """
-function runsimulation(bodies::Vector{Body}, T::Real)
+function runsimulation(bodies::Vector{Body}, method::String, T::Real)
     names = [body.name for body in bodies]
     tvals = [0.0]
     xvals = [[body.x for body ∈ bodies]]
@@ -310,7 +361,7 @@ function runsimulation(bodies::Vector{Body}, T::Real)
     t = hmin
 
     while t ≤ T
-        evolution!(bodies, stepcount)
+        evolution!(bodies, method, stepcount)
         push!(tvals, t)
         push!(xvals, [body.x for body ∈ bodies])
         push!(vvals, [body.v for body ∈ bodies])

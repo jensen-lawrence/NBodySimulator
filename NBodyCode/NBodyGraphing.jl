@@ -519,7 +519,7 @@ function staticspaceplot(data::Vector, coordinates::Vector{String}, positionscal
     index2 = findfirst(isequal(coordinates[2]), possiblecoords)
 
     # Function body
-    plt = plot(title = "System Evolution Over $(maximum(t)) $(timescale)")
+    plt = plot(title = "System Evolution Over $(maximum(t)) $(timescale)", aspect_ratio = :equal)
     if !showlegend
         plot!(legend = false)
     end
@@ -672,7 +672,7 @@ function animatedspaceplot(data::Vector, coordinates::Vector{String}, positionsc
     # Function body
     if length(coordinates) == 2
         animation = @animate for i ∈ 1:L₂
-            plot()
+            plot(aspect_ratio = :equal)
             for j ∈ 1:L₁
                 axis1vals = [xvals[k][j][index1] for k ∈ 1:i]; axis1point = [axis1vals[end]]
                 axis2vals = [xvals[k][j][index2] for k ∈ 1:i]; axis2point = [axis2vals[end]]
@@ -695,7 +695,7 @@ function animatedspaceplot(data::Vector, coordinates::Vector{String}, positionsc
     elseif length(coordinates) == 3
         index3 = findfirst(isequal(coordinates[3]), possiblecoords)
         animation = @animate for i ∈ 1:L₂
-            plot()
+            plot(aspect_ratio = :equal)
             for j ∈ 1:L₁
                 axis1vals = [xvals[k][j][index1] for k ∈ 1:i]; axis1point = [axis1vals[end]]
                 axis2vals = [xvals[k][j][index2] for k ∈ 1:i]; axis2point = [axis2vals[end]]
